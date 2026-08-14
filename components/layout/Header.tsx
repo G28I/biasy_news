@@ -1,10 +1,81 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, Globe, ChevronDown } from "lucide-react";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/Button";
+import posthog from "posthog-js";
 
 export const Header: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+ 
+  useEffect(() => {
+    const isSubscribed = localStorage.getItem("biasly_newsletter_subscribed") === "true";
+    const storedEmail = localStorage.getItem("biasly_newsletter_email") || "";
+    const timer = setTimeout(() => {
+      setSubscribed(isSubscribed);
+      setEmail(storedEmail);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+ 
+  useEffect(() => {
+    const syncState = () => {
+      const isSubscribed = localStorage.getItem("biasly_newsletter_subscribed") === "true";
+      const storedEmail = localStorage.getItem("biasly_newsletter_email") || "";
+      setSubscribed(isSubscribed);
+      setEmail(storedEmail);
+    };
+ 
+    window.addEventListener("storage", syncState);
+    window.addEventListener("biasly_subscribe_event", syncState);
+    return () => {
+      window.removeEventListener("storage", syncState);
+      window.removeEventListener("biasly_subscribe_event", syncState);
+    };
+  }, []);
+ 
+  const handleSubscribeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || isLoading) return;
+ 
+    setIsLoading(true);
+    try {
+      const action = subscribed ? "unsubscribe" : "subscribe";
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), action }),
+      });
+ 
+      if (res.ok) {
+        const nextSubscribed = !subscribed;
+        localStorage.setItem("biasly_newsletter_subscribed", String(nextSubscribed));
+        localStorage.setItem("biasly_newsletter_email", nextSubscribed ? email.trim() : "");
+        window.dispatchEvent(new Event("biasly_subscribe_event"));
+ 
+        if (nextSubscribed) {
+          posthog.identify(posthog.get_distinct_id(), { email: email.trim() });
+          posthog.capture("newsletter_subscribed");
+        } else {
+          posthog.capture("newsletter_unsubscribed");
+          setEmail("");
+        }
+      } else {
+        const data = await res.json();
+        console.error("Header subscription request failed:", data.error || res.statusText);
+      }
+    } catch (err) {
+      console.error("Header subscription request error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <header className="w-full flex flex-col font-sans select-none z-50 bg-white">
       {/* Top Utility Bar (Hidden on Mobile) */}
@@ -77,7 +148,11 @@ export const Header: React.FC = () => {
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
-          <Button variant="primary" className="py-2 px-5 text-xs font-semibold rounded-md-custom">
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            variant="primary" 
+            className="py-2 px-5 text-xs font-semibold rounded-md-custom"
+          >
             Subscribe
           </Button>
           
@@ -96,6 +171,57 @@ export const Header: React.FC = () => {
           </Show>
         </div>
       </div>
+ 
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300">
+          <div className="bg-white border border-border-color rounded-lg-custom p-8 max-w-md w-full mx-4 shadow-lg-custom flex flex-col gap-6 relative animate-fade-in">
+            <button 
+              onClick={() => { setIsModalOpen(false); }}
+              disabled={isLoading}
+              className="absolute top-4 right-4 text-brand-secondary hover:text-brand-primary transition-colors cursor-pointer text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              ✕
+            </button>
+            
+            <form onSubmit={handleSubscribeSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2 text-center select-none">
+                <h3 className="text-xl font-bold text-brand-primary">
+                  {subscribed ? "Manage Subscription" : "Subscribe to biasly"}
+                </h3>
+                <p className="text-sm text-brand-secondary leading-relaxed">
+                  {subscribed 
+                    ? "You are currently subscribed to daily news updates and bias metrics." 
+                    : "Get daily bias analyses and balanced news summaries delivered straight to your inbox."}
+                </p>
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                disabled={subscribed || isLoading}
+                className={`bg-white border border-border-color rounded-md-custom px-4 py-2.5 text-sm font-medium text-brand-primary placeholder-brand-secondary/60 outline-none focus:border-brand-primary transition-colors w-full ${
+                  subscribed ? "opacity-75 cursor-not-allowed select-none bg-surface/50" : ""
+                }`}
+              />
+              <Button 
+                type="submit" 
+                variant={subscribed ? "outline" : "primary"} 
+                disabled={isLoading}
+                className={`py-3 px-6 text-sm font-semibold rounded-md-custom w-full transition-colors ${
+                  subscribed ? "border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600" : ""
+                }`}
+              >
+                {isLoading ? "Processing..." : subscribed ? "Unsubscribe" : "Subscribe"}
+              </Button>
+              <p className="text-[10px] text-brand-secondary/60 text-center select-none italic mt-1">
+                Anytime unsubscribe, no questions asked
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
