@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #0D0D0F;
+  --color-brand-secondary: #6B7280;
+  --color-surface: #F6F6F6;
+
+  --color-left-bias: #B42318;
+  --color-center-bias: #E5E7EB;
+  --color-right-bias: #1D4ED8;
+
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F0F0F0;
+  --color-border-color: #E5E7EB;
+  --color-divider-color: #E5E7EB;
+
+  --font-sans: var(--font-poppins), sans-serif;
+
+  --shadow-sm-custom: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md-custom: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg-custom: 0 12px 24px rgba(0, 0, 0, 0.12);
+
+  --radius-sm-custom: 4px;
+  --radius-md-custom: 8px;
+  --radius-lg-custom: 12px;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-brand-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Typography Helpers based on the UI Reference */
+.h1-style {
+  font-family: var(--font-sans);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.h2-style {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.h3-style {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.h4-style {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.body-large-style {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.body-medium-style {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.body-small-style {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.caption-style {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+}
