@@ -256,8 +256,9 @@ export async function processScheduledResults(options?: {
       const runsList = Array.isArray(runsObj) ? runsObj : (runsObj.runs || []);
 
       // Filter runs with result_status === 'done' that have not been processed yet (Section 18)
-      const unprocessedDoneRuns = runsList.filter((run: { result_status?: string; status?: string; run_id?: string | number; id?: string | number }) => {
-        const isDone = run.result_status === "done" || run.status === "done" || run.status === "success";
+      const unprocessedDoneRuns = runsList.filter((run: { run_id?: string | number; id?: string | number; status?: string; started_at?: string; jobs?: { id?: string | number; result_status?: string }[] }) => {
+        const firstJob = run.jobs?.[0];
+        const isDone = firstJob?.result_status === "done" || run.status === "done" || run.status === "success";
         const runId = String(run.run_id || run.id);
         return isDone && !processedRunIdsSet.has(runId);
       });
@@ -266,14 +267,15 @@ export async function processScheduledResults(options?: {
 
       for (const run of unprocessedDoneRuns) {
         const runId = String(run.run_id || run.id);
-        console.log(`Processing completed job run: ${runId}`);
+        const jobId = String(run.jobs?.[0]?.id || runId);
+        console.log(`Processing completed job run: ${runId} (Job/Query ID: ${jobId})`);
 
         let resultsText = "";
         try {
           // Fetch results from Push-Pull Queries API (Section 18)
-          resultsText = await callOxylabsApi(`/v1/queries/${runId}/results`, "GET");
+          resultsText = await callOxylabsApi(`/v1/queries/${jobId}/results`, "GET");
         } catch (err: unknown) {
-          console.error(`Failed to retrieve results for job ${runId}:`, err);
+          console.error(`Failed to retrieve results for job ${jobId}:`, err);
           continue;
         }
 
