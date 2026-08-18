@@ -264,8 +264,12 @@ export async function processScheduledResults(options?: {
       });
 
       console.log(`Found ${unprocessedDoneRuns.length} new completed runs to process for ${source.name}`);
-
-      for (const run of unprocessedDoneRuns) {
+ 
+      // Limit to at most 5 runs per source per execution to prevent serverless function timeouts
+      const runsToProcess = unprocessedDoneRuns.slice(0, 5);
+      console.log(`Processing ${runsToProcess.length} out of ${unprocessedDoneRuns.length} completed runs for ${source.name}`);
+ 
+      for (const run of runsToProcess) {
         const runId = String(run.run_id || run.id);
         const jobId = String(run.jobs?.[0]?.id || runId);
         console.log(`Processing completed job run: ${runId} (Job/Query ID: ${jobId})`);

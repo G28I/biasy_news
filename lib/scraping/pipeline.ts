@@ -167,12 +167,20 @@ export async function processSourceHomepageHtml(
 
   // Scrape detail pages for fresh candidate URLs up to the source limit
   let sourceInsertedCount = 0;
+  let attemptsCount = 0;
+  const maxAttempts = limitPerSource * 2;
+  
   for (const articleUrl of freshCandidates) {
     if (sourceInsertedCount >= limitPerSource) {
       console.log(`Reached limit of ${limitPerSource} inserted articles for ${source.name}. Stopping.`);
       break;
     }
-
+    if (attemptsCount >= maxAttempts) {
+      console.log(`Reached maximum attempts limit of ${maxAttempts} for ${source.name}. Stopping.`);
+      break;
+    }
+ 
+    attemptsCount++;
     console.log(`Scraping article detail page: ${articleUrl}`);
     summary.detailPagesScraped++;
 
