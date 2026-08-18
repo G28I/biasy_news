@@ -94,7 +94,7 @@ export const NewsletterBanner: React.FC = () => {
             placeholder="Enter your email"
             required
             disabled={subscribed || isLoading}
-            className={`bg-white border border-border-color rounded-md-custom px-4 py-2 text-xs font-medium text-brand-primary placeholder-brand-secondary/60 outline-none focus:border-brand-primary transition-colors flex-grow md:w-[260px] ${
+            className={`bg-bg-primary border border-border-color rounded-md-custom px-4 py-2 text-xs font-medium text-brand-primary placeholder-brand-secondary/60 outline-none focus:border-brand-primary transition-colors flex-grow md:w-[260px] ${
               subscribed ? "opacity-75 cursor-not-allowed select-none bg-surface/50" : ""
             }`}
           />
@@ -103,7 +103,7 @@ export const NewsletterBanner: React.FC = () => {
             variant={subscribed ? "outline" : "primary"}
             disabled={isLoading}
             className={`py-2.5 px-6 text-xs font-semibold rounded-md-custom whitespace-nowrap transition-colors ${
-              subscribed ? "border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600" : ""
+              subscribed ? "border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-600" : ""
             }`}
           >
             {isLoading ? "Processing..." : subscribed ? "Unsubscribe" : "Subscribe"}

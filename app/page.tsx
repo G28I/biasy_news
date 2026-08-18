@@ -92,7 +92,7 @@ export default function Home() {
       <main className="flex-grow w-full max-w-[1280px] mx-auto px-6 py-6 flex flex-col gap-6">
         
         {/* Category Filters Bar */}
-        <div className="relative flex items-center bg-white border border-border-color rounded-md-custom py-3 px-4 shadow-sm-custom">
+        <div className="relative flex items-center bg-bg-primary border border-border-color rounded-md-custom py-3 px-4 shadow-sm-custom">
           {/* Scrollable Container */}
           <div
             ref={scrollContainerRef}
@@ -114,7 +114,7 @@ export default function Home() {
           {/* Right Scroll Indicator Button */}
           <button
             onClick={scrollRight}
-            className="absolute right-2 p-1.5 bg-white border border-border-color rounded-full shadow-sm-custom hover:bg-surface cursor-pointer text-brand-secondary hover:text-brand-primary transition-all duration-150"
+            className="absolute right-2 p-1.5 bg-bg-primary border border-border-color rounded-full shadow-sm-custom hover:bg-surface cursor-pointer text-brand-secondary hover:text-brand-primary transition-all duration-150"
           >
             <ChevronRight className="w-4 h-4 stroke-[2.5px]" />
           </button>

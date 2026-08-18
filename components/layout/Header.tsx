@@ -12,15 +12,53 @@ export const Header: React.FC = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTheme, setActiveTheme] = useState<"light" | "dark" | "system">("system");
  
   useEffect(() => {
     const isSubscribed = localStorage.getItem("biasly_newsletter_subscribed") === "true";
     const storedEmail = localStorage.getItem("biasly_newsletter_email") || "";
+    const storedTheme = (localStorage.getItem("biasly_theme") || "system") as "light" | "dark" | "system";
+
+    const applyTheme = (themeVal: "light" | "dark" | "system") => {
+      setActiveTheme(themeVal);
+      if (themeVal === "dark") {
+        document.documentElement.classList.add("dark");
+      } else if (themeVal === "light") {
+        document.documentElement.classList.remove("dark");
+      } else {
+        const isSystemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (isSystemDark) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+    };
+
     const timer = setTimeout(() => {
       setSubscribed(isSubscribed);
       setEmail(storedEmail);
+      applyTheme(storedTheme);
     }, 0);
-    return () => clearTimeout(timer);
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      const currentStored = localStorage.getItem("biasly_theme") || "system";
+      if (currentStored === "system") {
+        if (e.matches) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+
+    return () => {
+      clearTimeout(timer);
+      mediaQuery.removeEventListener("change", handleSystemThemeChange);
+    };
   }, []);
  
   useEffect(() => {
@@ -39,6 +77,23 @@ export const Header: React.FC = () => {
     };
   }, []);
  
+  const handleThemeChange = (themeVal: "light" | "dark" | "system") => {
+    localStorage.setItem("biasly_theme", themeVal);
+    setActiveTheme(themeVal);
+    if (themeVal === "dark") {
+      document.documentElement.classList.add("dark");
+    } else if (themeVal === "light") {
+      document.documentElement.classList.remove("dark");
+    } else {
+      const isSystemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (isSystemDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  };
+
   const handleSubscribeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || isLoading) return;
@@ -77,7 +132,7 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="w-full flex flex-col font-sans select-none z-50 bg-white">
+    <header className="w-full flex flex-col font-sans select-none z-50 bg-bg-primary">
       {/* Top Utility Bar (Hidden on Mobile) */}
       <div className="w-full bg-surface border-b border-border-color px-8 py-2.5 hidden md:flex items-center justify-between text-[11px] text-brand-secondary font-medium">
         {/* Left Links */}
@@ -86,11 +141,26 @@ export const Header: React.FC = () => {
             Browser Extension
           </a>
           <span className="text-divider-color">|</span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 select-none">
             <span>Theme:</span>
-            <button className="text-brand-primary font-semibold hover:underline cursor-pointer">Light</button>
-            <button className="hover:text-brand-primary transition-colors cursor-pointer">Dark</button>
-            <button className="hover:text-brand-primary transition-colors cursor-pointer">Auto</button>
+            <button
+              onClick={() => handleThemeChange("light")}
+              className={`cursor-pointer transition-colors ${activeTheme === "light" ? "text-brand-primary font-semibold underline" : "hover:text-brand-primary"}`}
+            >
+              Light
+            </button>
+            <button
+              onClick={() => handleThemeChange("dark")}
+              className={`cursor-pointer transition-colors ${activeTheme === "dark" ? "text-brand-primary font-semibold underline" : "hover:text-brand-primary"}`}
+            >
+              Dark
+            </button>
+            <button
+              onClick={() => handleThemeChange("system")}
+              className={`cursor-pointer transition-colors ${activeTheme === "system" ? "text-brand-primary font-semibold underline" : "hover:text-brand-primary"}`}
+            >
+              Auto
+            </button>
           </div>
         </div>
 
@@ -112,7 +182,7 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Main Navbar */}
-      <div className="w-full h-[72px] border-b border-border-color px-8 flex items-center justify-between bg-white shadow-sm-custom">
+      <div className="w-full h-[72px] border-b border-border-color px-8 flex items-center justify-between bg-bg-primary shadow-sm-custom">
         {/* Left Side (Logo and Hamburger) */}
         <div className="flex items-center gap-4">
           <button className="p-1.5 hover:bg-surface rounded-sm-custom transition-colors cursor-pointer text-brand-primary">
@@ -174,7 +244,7 @@ export const Header: React.FC = () => {
  
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300">
-          <div className="bg-white border border-border-color rounded-lg-custom p-8 max-w-md w-full mx-4 shadow-lg-custom flex flex-col gap-6 relative animate-fade-in">
+          <div className="bg-bg-primary border border-border-color rounded-lg-custom p-8 max-w-md w-full mx-4 shadow-lg-custom flex flex-col gap-6 relative animate-fade-in">
             <button 
               onClick={() => { setIsModalOpen(false); }}
               disabled={isLoading}

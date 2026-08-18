@@ -14,7 +14,7 @@ export const AISummary: React.FC<AISummaryProps> = ({
   highlights,
 }) => {
   return (
-    <div className="bg-white border border-border-color rounded-lg-custom p-6 shadow-sm-custom font-sans">
+    <div className="bg-bg-primary border border-border-color rounded-lg-custom p-6 shadow-sm-custom font-sans">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-divider-color pb-4 mb-4">
         <h3 className="text-sm font-bold tracking-wider text-brand-secondary uppercase flex items-center gap-1.5 select-none">

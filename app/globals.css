@@ -25,6 +25,21 @@
   --radius-lg-custom: 12px;
 }
 
+.dark {
+  --color-brand-primary: #F3F4F6;
+  --color-brand-secondary: #9CA3AF;
+  --color-surface: #1C1C1E;
+
+  --color-left-bias: #EF4444;
+  --color-center-bias: #374151;
+  --color-right-bias: #3B82F6;
+
+  --color-bg-primary: #0D0D0E;
+  --color-bg-secondary: #18181A;
+  --color-border-color: #2C2C2E;
+  --color-divider-color: #2C2C2E;
+}
+
 body {
   background-color: var(--color-bg-primary);
   color: var(--color-brand-primary);

@@ -205,7 +205,7 @@ export default function ArticleDetails({ params }: PageProps) {
               </p>
             </div>
 
-            <div className="bg-white border border-border-color rounded-lg-custom p-5 shadow-sm-custom flex flex-col gap-4">
+            <div className="bg-bg-primary border border-border-color rounded-lg-custom p-5 shadow-sm-custom flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold text-brand-secondary uppercase tracking-wider flex items-center gap-1.5 select-none">
                   Bias Distribution
@@ -225,7 +225,7 @@ export default function ArticleDetails({ params }: PageProps) {
             </div>
 
             {analysis && (
-              <div className="bg-white border border-border-color rounded-lg-custom p-6 shadow-sm-custom flex flex-col gap-6 mt-4">
+              <div className="bg-bg-primary border border-border-color rounded-lg-custom p-6 shadow-sm-custom flex flex-col gap-6 mt-4">
                 <div className="flex items-center gap-2 border-b border-divider-color pb-3 select-none">
                   <h3 className="text-lg font-bold text-brand-primary">AI Framing & Sentiment Analysis</h3>
                   <Chip label="AI-Estimated" className="bg-surface border-border-color text-brand-secondary font-semibold" />
@@ -273,7 +273,7 @@ export default function ArticleDetails({ params }: PageProps) {
                     <h4 className="text-sm font-bold text-brand-primary">Loaded or Biased Terms Detected</h4>
                     <div className="flex flex-wrap gap-2">
                       {loadedTerms.map((term: string, idx: number) => (
-                        <span key={idx} className="text-xs font-semibold px-3 py-1 bg-red-50 text-red-600 border border-red-100 rounded-md-custom">
+                        <span key={idx} className="text-xs font-semibold px-3 py-1 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/50 rounded-md-custom">
                           &ldquo;{term}&rdquo;
                         </span>
                       ))}
@@ -318,7 +318,7 @@ export default function ArticleDetails({ params }: PageProps) {
                             related_source_name: relSourceName,
                           })
                         }
-                        className="flex gap-4 p-3 bg-white border border-border-color rounded-lg-custom shadow-sm-custom hover:shadow-md-custom hover:scale-[1.01] transition-all duration-200"
+                        className="flex gap-4 p-3 bg-bg-primary border border-border-color rounded-lg-custom shadow-sm-custom hover:shadow-md-custom hover:scale-[1.01] transition-all duration-200"
                       >
                         <div className="relative w-[110px] h-[74px] rounded-md-custom overflow-hidden flex-shrink-0">
                           <Image

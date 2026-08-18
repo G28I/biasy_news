@@ -35,7 +35,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
   if (variant === "vertical") {
     return (
       <div
-        className={`flex flex-col bg-white border border-border-color rounded-lg-custom shadow-md-custom font-sans w-full transition-all duration-300 hover:shadow-lg-custom overflow-hidden ${className}`}
+        className={`flex flex-col bg-bg-primary border border-border-color rounded-lg-custom shadow-md-custom font-sans w-full transition-all duration-300 hover:shadow-lg-custom overflow-hidden ${className}`}
       >
         {/* Top Image */}
         <div className="relative w-full h-[180px] flex-shrink-0 overflow-hidden group">
@@ -84,7 +84,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
   // Horizontal Card (default)
   return (
     <div
-      className={`flex flex-col md:flex-row gap-6 p-6 bg-white border border-border-color rounded-lg-custom shadow-md-custom font-sans max-w-4xl transition-all duration-300 hover:shadow-lg-custom ${className}`}
+      className={`flex flex-col md:flex-row gap-6 p-6 bg-bg-primary border border-border-color rounded-lg-custom shadow-md-custom font-sans max-w-4xl transition-all duration-300 hover:shadow-lg-custom ${className}`}
     >
       {/* Left side - Image */}
       <div className="relative w-full md:w-[280px] h-[180px] flex-shrink-0 rounded-md-custom overflow-hidden group">
