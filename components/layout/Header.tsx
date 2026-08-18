@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, Globe, ChevronDown } from "lucide-react";
+import { Menu, Globe, ChevronDown, Sun, Moon, Monitor } from "lucide-react";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/Button";
 import posthog from "posthog-js";
@@ -218,6 +218,19 @@ export const Header: React.FC = () => {
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              const nextTheme = activeTheme === "light" ? "dark" : activeTheme === "dark" ? "system" : "light";
+              handleThemeChange(nextTheme);
+            }}
+            className="p-2 hover:bg-surface rounded-md-custom text-brand-secondary hover:text-brand-primary transition-colors cursor-pointer mr-1 flex items-center justify-center"
+            title={`Current Theme: ${activeTheme}`}
+          >
+            {activeTheme === "light" && <Sun className="w-4.5 h-4.5" />}
+            {activeTheme === "dark" && <Moon className="w-4.5 h-4.5" />}
+            {activeTheme === "system" && <Monitor className="w-4.5 h-4.5" />}
+          </button>
+
           <Button 
             onClick={() => setIsModalOpen(true)}
             variant="primary" 
